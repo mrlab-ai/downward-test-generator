@@ -18,6 +18,8 @@ public:
         const std::shared_ptr<std::vector<PatternClique>> &pattern_cliques);
     ~CanonicalPDBs() = default;
 
+    void print_values(const State& state) const;
+
     int get_value(const State &state) const;
 };
 }
