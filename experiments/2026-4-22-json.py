@@ -12,7 +12,7 @@ from downward.reports.absolute import AbsoluteReport
 from lab.environments import TetralithEnvironment, LocalEnvironment
 from lab.experiment import Experiment
 from lab.reports import Attribute, geometric_mean
-from sys_1_parser import Sys1Parser
+from systematic_pdb_parser import SystematicPDBParser
 
 
 # Create custom report class with suitable info and error attributes.
@@ -91,14 +91,15 @@ SUITE = [
 ATTRIBUTES = [
     "run_dir",
     "sys_1_heuristic_estimates_initial_state",
+    "sys_2_heuristic_estimates_initial_state",
 ]
 
 MEMORY_LIMIT = 8000
 
 # Create a new experiment.
 exp = Experiment(environment=ENV)
-# Add custom parser for FF.
-exp.add_parser(Sys1Parser())
+# Add parser for systematic PDB heuristic-estimate output lines.
+exp.add_parser(SystematicPDBParser())
 
 
 exp.add_resource("fast_downward_py", str(REPO / "fast-downward.py"))
@@ -109,6 +110,9 @@ exp.add_resource("downward", str(REPO / "builds" / "release" / "bin" / "downward
 CONFIGS = {
     "sys-1": [
         "--translate-options", "--invariant-generation-max-time=0", "--search-options", "--search", "astar(cpdbs(systematic(1)), bound=1)",
+    ],
+    "sys-2": [
+        "--translate-options", "--invariant-generation-max-time=0", "--search-options", "--search", "astar(cpdbs(systematic(2)), bound=1)",
     ],
 }
 
