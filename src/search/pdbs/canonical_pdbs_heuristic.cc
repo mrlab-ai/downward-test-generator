@@ -1,15 +1,18 @@
 #include "canonical_pdbs_heuristic.h"
 
 #include "dominance_pruning.h"
+#include "pattern_collection_generator_systematic.h"
 #include "utils.h"
 
 #include "../plugins/plugin.h"
 #include "../utils/logging.h"
+#include "../utils/system.h"
 #include "../utils/timer.h"
 
 #include <iostream>
 #include <limits>
 #include <memory>
+#include <string>
 
 using namespace std;
 
@@ -64,6 +67,20 @@ CanonicalPDBsHeuristic::CanonicalPDBsHeuristic(
     : Heuristic(transform, cache_estimates, description, verbosity),
       canonical_pdbs(
           get_canonical_pdbs(task, patterns, max_time_dominance_pruning, log)) {
+    canonical_pdbs.set_heuristic_estimates_key(
+        get_heuristic_prefix(patterns) + "_heuristic_estimates_initial_state");
+}
+
+string CanonicalPDBsHeuristic::get_heuristic_prefix(
+    const shared_ptr<PatternCollectionGenerator> &patterns) const {
+    auto *systematic_patterns =
+        dynamic_cast<const PatternCollectionGeneratorSystematic *>(
+            patterns.get());
+    if (systematic_patterns) {
+        int k = systematic_patterns->get_pattern_max_size();
+        return "sys_" + to_string(k);
+    }
+    ABORT("cpdbs heuristic estimates output currently requires systematic(k) patterns");
 }
 
 int CanonicalPDBsHeuristic::compute_heuristic(const State &ancestor_state) {

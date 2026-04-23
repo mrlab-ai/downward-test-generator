@@ -48,6 +48,10 @@ public:
     PatternCollectionGeneratorSystematic(
         int pattern_max_size, bool only_interesting_patterns,
         utils::Verbosity verbosity);
+
+    int get_pattern_max_size() const {
+        return max_pattern_size;
+    }
 };
 }
 

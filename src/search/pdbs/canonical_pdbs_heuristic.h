@@ -15,6 +15,9 @@ namespace pdbs {
 class CanonicalPDBsHeuristic : public Heuristic {
     CanonicalPDBs canonical_pdbs;
 
+    std::string get_heuristic_prefix(
+        const std::shared_ptr<PatternCollectionGenerator> &patterns) const;
+
 protected:
     virtual int compute_heuristic(const State &ancestor_state) override;
 

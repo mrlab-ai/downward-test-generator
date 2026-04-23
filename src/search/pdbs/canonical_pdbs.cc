@@ -16,9 +16,15 @@ namespace pdbs {
 CanonicalPDBs::CanonicalPDBs(
     const shared_ptr<PDBCollection> &pdbs,
     const shared_ptr<vector<PatternClique>> &pattern_cliques)
-    : pdbs(pdbs), pattern_cliques(pattern_cliques) {
+    : pdbs(pdbs),
+      pattern_cliques(pattern_cliques),
+            heuristic_estimates_key("") {
     assert(pdbs);
     assert(pattern_cliques);
+}
+
+void CanonicalPDBs::set_heuristic_estimates_key(const std::string &key) {
+    heuristic_estimates_key = key;
 }
 
 void CanonicalPDBs::print_values(const State& state) const {
@@ -33,7 +39,7 @@ void CanonicalPDBs::print_values(const State& state) const {
         h_values.push_back(h);
     }
 
-    std::cout << "sys_1_heuristic_estimates_initial_state: " << h_values << std::endl;
+    std::cout << heuristic_estimates_key << ": " << h_values << std::endl;
 }
 
 int CanonicalPDBs::get_value(const State &state) const {
