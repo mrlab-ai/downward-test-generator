@@ -29,7 +29,7 @@ class BaseReport(AbsoluteReport):
 
 DIR = Path(__file__).resolve().parent
 REPO = DIR.parent
-DATA = REPO / "data"
+BENCHMARKS_DIR = Path("/home/jorth68/research/autoscale-benchmarks/21.11-optimal-strips")
 
 NODE = platform.node()
 REMOTE = re.match(r"tetralith\d+.nsc.liu.se|n\d+", NODE)
@@ -42,10 +42,11 @@ if REMOTE:
     TIME_LIMIT = 5 * 60  # 5 minutes
 else:
     ENV = LocalEnvironment(processes=12)
-    SUITE = [
-        "gripper:p-2-0.pddl",
-    ]
     TIME_LIMIT = 10
+
+SUITE = [
+    "gripper",
+]
 ATTRIBUTES = [
     "run_dir",
     "sys_1_heuristic_estimates_initial_state",
@@ -70,7 +71,7 @@ CONFIGS = {
     ],
 }
 
-for task in suites.build_suite(DATA, SUITE):
+for task in suites.build_suite(BENCHMARKS_DIR, SUITE):
     for config_name, CFG in CONFIGS.items():
         run = exp.add_run()
         run.add_resource("domain", task.domain_file, symlink=True)
