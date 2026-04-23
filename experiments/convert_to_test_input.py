@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import re
 import subprocess
 
 from pathlib import Path
@@ -85,14 +86,11 @@ def build_output(runs: dict) -> dict:
 
     sorted_runs = sorted(runs.values(), key=lambda run: run["problem"])
     for value_key in value_keys:
-        output["values"][value_key] = [
-            {
-                "problem": run["problem"],
-                "value": run[value_key],
-            }
+        output["values"][value_key] = {
+            run["problem"]: run[value_key]
             for run in sorted_runs
             if value_key in run
-        ]
+        }
 
     return output
 
@@ -103,6 +101,7 @@ def main() -> int:
     runs = load_runs(properties_path)
     output = build_output(runs)
     output_text = json.dumps(output, indent=4)
+    output_text = re.sub(r"\[(?:\n\s+\d+,?)+\n\s*\]", lambda match: "[" + ", ".join(re.findall(r"\d+", match.group(0))) + "]", output_text)
 
     output_path = Path(args.output) if args.output else properties_path.with_name("test_input.json")
     output_path.write_text(output_text + "\n")
