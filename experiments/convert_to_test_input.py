@@ -20,6 +20,7 @@ IGNORED_RUN_KEYS = {
     "problem",
     "run_dir",
     "time_limit",
+    "unexplained_errors",
 }
 
 
@@ -73,24 +74,32 @@ def build_output(runs: dict) -> dict:
     if not runs:
         raise ValueError("Properties file does not contain any runs.")
 
-    domains = {run["domain"] for run in runs.values()}
-    if len(domains) != 1:
-        raise ValueError(f"Expected exactly one domain, found: {sorted(domains)}")
-
     value_keys = collect_value_keys(runs)
     output = {
-        "domain": next(iter(domains)),
         "fd_git_hash": get_git_hash(),
-        "values": {},
+        "domains": {},
     }
 
-    sorted_runs = sorted(runs.values(), key=lambda run: run["problem"])
-    for value_key in value_keys:
-        output["values"][value_key] = {
-            run["problem"]: run[value_key]
-            for run in sorted_runs
-            if value_key in run
-        }
+    # Group runs by domain
+    domains_dict = {}
+    for run in runs.values():
+        domain = run["domain"]
+        if domain not in domains_dict:
+            domains_dict[domain] = []
+        domains_dict[domain].append(run)
+
+    # Build output for each domain
+    for domain in sorted(domains_dict.keys()):
+        domain_runs = sorted(domains_dict[domain], key=lambda run: run["problem"])
+        domain_output = {"values": {}}
+        
+        for value_key in value_keys:
+            domain_output["values"][value_key] = {
+                run["problem"]: run.get(value_key, None)
+                for run in domain_runs
+            }
+        
+        output["domains"][domain] = domain_output
 
     return output
 
