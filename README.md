@@ -1,5 +1,13 @@
 <img src="misc/images/fast-downward.svg" width="800" alt="Fast Downward">
 
+## About This Fork
+
+This fork is focused on generating test input data for the lifted planning system Tyr:
+<https://github.com/drexlerd/tyr>
+
+Start here:
+- [Generating Tyr test data](GENERATING_TYR_TEST_DATA.md)
+
 Fast Downward is a domain-independent classical planning system.
 
 Copyright 2003-2025 Fast Downward contributors (see below).
