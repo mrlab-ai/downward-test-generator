@@ -7,7 +7,7 @@ import subprocess
 from pathlib import Path
 
 from downward import suites
-from tyr_benchmark_config import BENCHMARKS_DIR, SUITE, validate_benchmarks_dir
+from tyr_benchmark_config import BENCHMARKS_DIR, SUITE, TYR_ROOT, validate_benchmarks_dir
 
 
 DIR = Path(__file__).resolve().parent
@@ -74,9 +74,12 @@ def build_output(runs: dict) -> dict:
     domain_files = {}  # domain_name -> domain_file
     
     for task in suites.build_suite(BENCHMARKS_DIR, SUITE):
-        domain_files[task.domain] = str(task.domain_file)
+        domain_files[task.domain] = str(Path(task.domain_file).relative_to(TYR_ROOT))
         problem_name = Path(task.problem_file).stem + ".pddl"
-        task_map[(task.domain, problem_name)] = (str(task.domain_file), str(task.problem_file))
+        task_map[(task.domain, problem_name)] = (
+            str(Path(task.domain_file).relative_to(TYR_ROOT)),
+            str(Path(task.problem_file).relative_to(TYR_ROOT)),
+        )
 
     output = {
         "fd_git_hash": get_git_hash(),
