@@ -29,7 +29,14 @@ class BaseReport(AbsoluteReport):
 
 DIR = Path(__file__).resolve().parent
 REPO = DIR.parent
-BENCHMARKS_DIR = Path("/home/jorth68/research/autoscale-benchmarks/21.11-optimal-strips")
+TYR_ROOT = Path(os.environ.get("TYR_ROOT", "~/research/Tyr-lifted-pdb")).expanduser()
+BENCHMARKS_DIR = TYR_ROOT / "data"
+
+if not BENCHMARKS_DIR.is_dir():
+    raise FileNotFoundError(
+        f"Could not find benchmark directory at {BENCHMARKS_DIR}. "
+        "Set TYR_ROOT to your local Tyr repository path."
+    )
 
 NODE = platform.node()
 REMOTE = re.match(r"tetralith\d+.nsc.liu.se|n\d+", NODE)
@@ -44,50 +51,10 @@ else:
     ENV = LocalEnvironment(processes=12)
     TIME_LIMIT = 10
 
-SUITE = [
-    "agricola",
-    "airport",
-    "barman",
-    "blocksworld",
-    "childsnack",
-    "data-network",
-    "depots",
-    "driverlog",
-    "elevators",
-    "floortile",
-    "freecell",
-    "ged",
-    "grid",
-    "gripper",
-    "hiking",
-    "logistics",
-    "miconic",
-    "mprime",
-    "nomystery",
-    "openstacks",
-    "organic-synthesis-split",
-    "parcprinter",
-    "parking",
-    "pathways",
-    "pegsol",
-    "pipesworld-notankage",
-    "pipesworld-tankage",
-    "rovers",
-    "satellite",
-    "scanalyzer",
-    "snake",
-    "sokoban",
-    "storage",
-    "termes",
-    "tetris",
-    "thoughtful",
-    "tidybot",
-    "tpp",
-    "transport",
-    "visitall",
-    "woodworking",
-    "zenotravel",
-]
+SUITE = sorted(
+    path.name for path in BENCHMARKS_DIR.iterdir()
+    if path.is_dir() and not path.name.startswith(".")
+)
 ATTRIBUTES = [
     "run_dir",
     "sys_1_heuristic_estimates_initial_state",
