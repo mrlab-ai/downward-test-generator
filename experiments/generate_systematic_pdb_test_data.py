@@ -2,7 +2,6 @@
 
 import platform
 import re
-import os
 import sys
 
 from pathlib import Path
@@ -13,6 +12,7 @@ from lab.environments import TetralithEnvironment, LocalEnvironment
 from lab.experiment import Experiment
 from lab.reports import Attribute, geometric_mean
 from systematic_pdb_parser import SystematicPDBParser
+from tyr_benchmark_config import BENCHMARKS_DIR, SUITE, validate_benchmarks_dir
 
 
 # Create custom report class with suitable info and error attributes.
@@ -29,14 +29,7 @@ class BaseReport(AbsoluteReport):
 
 DIR = Path(__file__).resolve().parent
 REPO = DIR.parent
-TYR_ROOT = Path(os.environ.get("TYR_ROOT", "~/research/Tyr-lifted-pdb")).expanduser()
-BENCHMARKS_DIR = TYR_ROOT / "data"
-
-if not BENCHMARKS_DIR.is_dir():
-    raise FileNotFoundError(
-        f"Could not find benchmark directory at {BENCHMARKS_DIR}. "
-        "Set TYR_ROOT to your local Tyr repository path."
-    )
+validate_benchmarks_dir()
 
 NODE = platform.node()
 REMOTE = re.match(r"tetralith\d+.nsc.liu.se|n\d+", NODE)
@@ -51,10 +44,6 @@ else:
     ENV = LocalEnvironment(processes=12)
     TIME_LIMIT = 10
 
-SUITE = sorted(
-    path.name for path in BENCHMARKS_DIR.iterdir()
-    if path.is_dir() and not path.name.startswith(".")
-)
 ATTRIBUTES = [
     "run_dir",
     "sys_1_heuristic_estimates_initial_state",

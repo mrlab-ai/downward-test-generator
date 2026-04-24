@@ -37,8 +37,8 @@ Convert the generated properties file into test_input.json:
 
 ```bash
 python experiments/convert_to_test_input.py \
-  experiments/data/2026-4-22-json-eval/properties \
-  -o experiments/data/2026-4-22-json-eval/test_input.json
+  experiments/data/generate_systematic_pdb_test_data-eval/properties \
+  -o experiments/data/generate_systematic_pdb_test_data-eval/test_input.json
 ```
 
 The resulting JSON is intended to be consumed as test input for Tyr.

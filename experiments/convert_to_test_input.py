@@ -7,56 +7,14 @@ import subprocess
 from pathlib import Path
 
 from downward import suites
+from tyr_benchmark_config import BENCHMARKS_DIR, SUITE, validate_benchmarks_dir
 
 
 DIR = Path(__file__).resolve().parent
 REPO = DIR.parent
-DEFAULT_PROPERTIES = DIR / "data" / "2026-4-22-json-eval" / "properties"
-BENCHMARKS_DIR = Path("/home/jorth68/research/autoscale-benchmarks/21.11-optimal-strips")
-SUITE = [
-    "agricola",
-    "airport",
-    "barman",
-    "blocksworld",
-    "childsnack",
-    "data-network",
-    "depots",
-    "driverlog",
-    "elevators",
-    "floortile",
-    "freecell",
-    "ged",
-    "grid",
-    "gripper",
-    "hiking",
-    "logistics",
-    "miconic",
-    "mprime",
-    "nomystery",
-    "openstacks",
-    "organic-synthesis-split",
-    "parcprinter",
-    "parking",
-    "pathways",
-    "pegsol",
-    "pipesworld-notankage",
-    "pipesworld-tankage",
-    "rovers",
-    "satellite",
-    "scanalyzer",
-    "snake",
-    "sokoban",
-    "storage",
-    "termes",
-    "tetris",
-    "thoughtful",
-    "tidybot",
-    "tpp",
-    "transport",
-    "visitall",
-    "woodworking",
-    "zenotravel",
-]
+DEFAULT_PROPERTIES = DIR / "data" / "generate_systematic_pdb_test_data-eval" / "properties"
+
+validate_benchmarks_dir()
 
 IGNORED_RUN_KEYS = {
     "algorithm",
